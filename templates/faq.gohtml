@@ -1,3 +1,14 @@
 <h1>FAQ Page</h1>
 <p>In this page, you can find the Frequently Asked Questions</p>
 <p>Help yourself</p>
+
+<ul>
+    {{range .}}
+        {{template "qa" .}}
+    {{end}}
+</ul>
+{{define "qa"}}
+<li>
+    <b>{{.Question}}</b> {{.Answer}}
+</li>
+{{end}}
