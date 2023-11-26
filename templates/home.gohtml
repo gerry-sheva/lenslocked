@@ -1,5 +1,7 @@
-{{template "header"}}
-<h1 class="font-bold text-3xl">Welcome to My Page</h1>
-<p>Insert dancing Jesus here</p>
-<p>Insert some loud noises here</p>
-{{template "footer"}}
+{{template "header" .}}
+<div class="px-6">
+  <h1 class="py-4 text-4xl semibold tracking-tight">
+    Welcome to my awesome site!
+  </h1>
+</div>
+{{template "footer" .}}
