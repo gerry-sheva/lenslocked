@@ -42,6 +42,7 @@ func main() {
 	r.Post("/users", usersC.Create)
 	r.Get("/signin", usersC.SignIn)
 	r.Post("/signin", usersC.ProcessSignIn)
+	r.Get("/users/me", usersC.CurrentUser)
 
 	fmt.Println("server is ready at port 3000")
 	http.ListenAndServe(":3000", r)
