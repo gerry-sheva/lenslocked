@@ -10,6 +10,7 @@ import (
 	"github.com/gerry-sheva/lenslocked/views"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/gorilla/csrf"
 )
 
 func main() {
@@ -44,6 +45,9 @@ func main() {
 	r.Post("/signin", usersC.ProcessSignIn)
 	r.Get("/users/me", usersC.CurrentUser)
 
+	csrfKey := "ZxvW9iM3fhbFV7Bkcr2RmhT2se0iI5CQ"
+	csrfMw := csrf.Protect([]byte(csrfKey), csrf.Secure(false))
+
 	fmt.Println("server is ready at port 3000")
-	http.ListenAndServe(":3000", r)
+	http.ListenAndServe(":3000", csrfMw(r))
 }
