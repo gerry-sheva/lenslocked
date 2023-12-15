@@ -1,8 +1,10 @@
 package views
 
 import (
+	"bytes"
 	"fmt"
 	"html/template"
+	"io"
 	"io/fs"
 	"log"
 	"net/http"
@@ -21,8 +23,8 @@ func ParseFS(fs fs.FS, patterns ...string) (Template, error) {
 	tpl := template.New(patterns[0])
 	tpl = tpl.Funcs(
 		template.FuncMap{
-			"csrfField": func() template.HTML {
-				return `<input type="hidden" />`
+			"csrfField": func() (template.HTML, error) {
+				return "", fmt.Errorf("csrfField not yet implemented")
 			},
 		},
 	)
@@ -43,7 +45,7 @@ type Template struct {
 func (t Template) Execute(w http.ResponseWriter, r *http.Request, data interface{}) {
 	tpl, err := t.htmlTpl.Clone()
 	if err != nil {
-		log.Printf("There was error during cloning: %w", err)
+		log.Printf("There was error during cloning: %v", err)
 		http.Error(w, "There was an error", 400)
 	}
 	tpl = tpl.Funcs(
@@ -54,10 +56,11 @@ func (t Template) Execute(w http.ResponseWriter, r *http.Request, data interface
 		},
 	)
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-
-	err = tpl.Execute(w, data)
+	var buf bytes.Buffer
+	err = tpl.Execute(&buf, data)
 	if err != nil {
 		log.Printf("Executing template error: %v", err)
 		http.Error(w, "There was an error during execution", http.StatusInternalServerError)
 	}
+	io.Copy(w, &buf)
 }
